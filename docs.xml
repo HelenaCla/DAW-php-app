@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpdocumentor>
+    <transformer>
+        <!-- La carpeta donde se "publicará" la documentación generada -->
+        <target>./docs</target>
+    </transformer>
+    <parser>
+        <!-- La carpeta de destino donde se guardarán los archivos parseados (opcionalmente la misma) -->
+        <target>./docs</target>
+    </parser>
+    <files>
+        <!-- Directorio (o directorios) donde está tu código. 
+             '.' significa "la carpeta actual" (donde está este archivo docs.xml). -->
+        <directory>.</directory>
+    </files>
+</phpdocumentor>

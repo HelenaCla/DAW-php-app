@@ -1,10 +1,33 @@
 <?php
+// ------------------------------------------------------
+// Este archivo define la clase Header, encargada de
+// generar el encabezado HTML con Bootstrap y un carrusel
+// ------------------------------------------------------
 
+/**
+ * Clase Header que imprime la estructura HTML del encabezado.
+ *
+ * Esta clase contiene un método para mostrar la cabecera y un carrusel,
+ * incluyendo la carga de estilos, imágenes y la barra de navegación.
+ *
+ * @category  WebApplication
+ * @package   DAW-php-app
+ * @author    Carles
+ * @version   1.0
+ */
 class Header {
     
-    // Método para mostrar el encabezado
+    /**
+     * Muestra el encabezado HTML, la barra de navegación y un carrusel.
+     *
+     * Este método imprime la estructura básica de HTML, incluyendo la
+     * cabecera con Bootstrap, estilos personalizados y un carrusel de
+     * imágenes para el sitio.
+     *
+     * @return void
+     */
     public function mostrarHeader() {
-        // Imprime la estructura básica de un documento HTML con el encabezado y los estilos
+        // Imprime la estructura inicial del documento HTML
         echo '<!DOCTYPE html>
               <html lang="es">
               <head>
@@ -18,23 +41,23 @@ class Header {
                 <style>
                     body {
                         margin-bottom: 70px; /* Ajusta la altura del footer fijo */
-                        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Utiliza Helvetica como tipografía predeterminada */
+                        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Tipografía predeterminada */
                     }
                     .footer {
                         position: fixed;
                         bottom: 0;
                         width: 100%;
-                        background-color: #343a40; /* Color de fondo del footer */
-                        color: white; /* Color del texto del footer */
-                        padding: 10px 0; /* Espaciado interno del footer */
+                        background-color: #343a40;
+                        color: white;
+                        padding: 10px 0;
                     }
                     .navbar-custom {
-                        background-color: #37541d !important; /* Cambia el color de fondo del encabezado a blanco */
-                        color: #343a40 !important; /* Cambia el color del texto del encabezado a oscuro */
-                        padding: 15px 0; /* Ajusta el espaciado interno del encabezado */
+                        background-color: #37541d !important;
+                        color: #343a40 !important;
+                        padding: 15px 0;
                     }
                     .navbar-custom .navbar-nav .nav-link {
-                        color: #ffffff !important; /* Cambia el color del texto del menú a oscuro */
+                        color: #ffffff !important;
                     }
                     
                     /* Estilos adicionales para personalizar el carrusel */
@@ -51,7 +74,7 @@ class Header {
               </head>
               <body>';
         
-        // Imprime el encabezado con la barra de navegación y el logotipo
+        // Imprime el contenedor del encabezado con la barra de navegación
         echo '<header class="container-fluid navbar-custom">
                 <div class="container">
                     <div class="row align-items-center">
@@ -93,7 +116,7 @@ class Header {
                 </div>
               </header>';
         
-        // Imprime el carrusel con imágenes
+        // Imprime el contenedor y la estructura del carrusel
         echo '<div class="container" id="carrusel-container">
     <div id="carrusel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
@@ -120,7 +143,9 @@ class Header {
     }
 }
 
-// Crea una instancia de la clase Header y llama al método mostrarHeader
+// ------------------------------------------------------
+// Instancia de la clase Header y llamada a mostrarHeader
+// ------------------------------------------------------
 $header = new Header();
 $header->mostrarHeader();
 

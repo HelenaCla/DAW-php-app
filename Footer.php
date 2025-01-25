@@ -1,8 +1,30 @@
 <?php
+// ------------------------------------------------------
+// Footer.php: Clase Footer para mostrar el pie de página
+// ------------------------------------------------------
 
+/**
+ * Clase Footer que imprime la parte inferior de la página web.
+ *
+ * Esta clase contiene un método para mostrar el pie de página (footer),
+ * con estilos de Bootstrap y scripts para funcionalidades como el carrusel.
+ *
+ * @category  WebApplication
+ * @package   DAW-php-app
+ * @author    Carles
+ * @version   1.0
+ */
 class Footer {
 
    // Método para mostrar el pie de página
+   /**
+    * Muestra el footer HTML e incluye los scripts necesarios.
+    *
+    * Imprime un contenedor con texto y enlaces, y también agrega
+    * los scripts de Bootstrap para el carrusel u otras funciones.
+    *
+    * @return void
+    */
    public function mostrarFooter() {
         // Imprime el HTML del pie de página
         echo '<div class="footer text-center bg-dark text-white py-2">

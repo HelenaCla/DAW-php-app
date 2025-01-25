@@ -1,11 +1,40 @@
 <?php
+/**
+ * Archivo Actualitzar.
+ *
+ * Este archivo contiene la clase Actualitzar que se encarga de procesar la
+ * actualización de productos en la base de datos. También recoge los valores
+ * enviados por el formulario y llama al método correspondiente.
+ *
+ * @category  WebApplication
+ * @package   DAW-php-app
+ * @author    Carles
+ * @version   1.0
+ */
 
 // Incluye el archivo de conexión
 require_once('Connexio.php');
 
+/**
+ * Clase Actualitzar que gestiona la actualización de productos en la base de datos.
+ *
+ * Proporciona el método actualizar, que recibe los datos de un producto, los
+ * valida y los aplica en la tabla 'productes'.
+ */
 class Actualitzar {
     
-    // Método para actualizar un producto en la base de datos
+    /**
+     * Actualiza un producto en la base de datos.
+     *
+     * @param mixed $id         ID del producto a actualizar.
+     * @param mixed $nom        Nombre del producto.
+     * @param mixed $descripcio Descripción del producto.
+     * @param mixed $preu       Precio del producto.
+     * @param mixed $categoria  ID de la categoría a la que pertenece el producto.
+     *
+     * @return void Imprime mensajes de error si faltan campos o si ocurre
+     *              un fallo al ejecutar la consulta.
+     */
     public function actualizar($id, $nom, $descripcio, $preu, $categoria) {
         // Verifica si todos los campos requeridos están presentes
         if (!isset($id) || !isset($nom) || !isset($descripcio) || !isset($preu) || !isset($categoria)) {

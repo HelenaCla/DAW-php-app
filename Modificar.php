@@ -1,100 +1,155 @@
 <?php
+// ------------------------------------------------------
+// Inicio del código PHP
+// ------------------------------------------------------
 
+/**
+ * Archivo principal de la aplicación que gestiona y muestra los productos.
+ *
+ * Este archivo incluye la clase Principal, encargada de mostrar los
+ * productos que hay en la base de datos. Además, requiere las clases
+ * y vistas necesarias para la correcta visualización de los datos.
+ *
+ * PHP version 7.4+
+ *
+ * @category  WebApplication
+ * @package   DAW-php-app
+ * @author    Carles
+ */
+
+// ------------------------------------------------------
+// Carga de archivos requeridos
+// ------------------------------------------------------
+
+// Incluye el archivo que gestiona la conexión a la base de datos.
+// Contiene la clase Connexio, que provee el método obtenirConnexio().
 require_once('Connexio.php');
+
+// Incluye la cabecera de la aplicación (HTML, estilos, menús, etc.)
+// El archivo Header.php suele contener el encabezado común para todas las páginas.
 require_once('Header.php');
 
-class Modificar {
+/**
+ * Clase principal que gestiona la lista de productos.
+ *
+ * Esta clase contiene el método principal para mostrar los productos
+ * en una tabla, incluyendo las acciones de modificar, eliminar, etc.
+ */
+class Principal {
+    
+    /**
+     * Muestra la lista de productos y genera la estructura HTML.
+     *
+     * Este método se encarga de:
+     * - Conectarse a la base de datos a través de la clase Connexio.
+     * - Consultar la tabla de productos y categorías.
+     * - Generar una tabla HTML con Bootstrap para mostrar el listado.
+     * - Incluir enlaces para crear, modificar y eliminar productos.
+     * - Incluir un footer al final de la tabla.
+     *
+     * @return void No devuelve nada; solo genera y muestra HTML.
+     */
+    public function mostrarProductes() {
+        // ------------------------------------------------------
+        // 1. Obtenemos la conexión a la base de datos
+        // ------------------------------------------------------
+        $conexionObj = new Connexio();              // Instancia la clase de conexión
+        $conexion = $conexionObj->obtenirConnexio(); // Llama al método que devuelve la conexión activa
 
-    // Método para mostrar el formulario de modificación del producto
-    public function mostrarFormulari($id) {
-        // Verifica si el ID del producto es válido
-        if (!isset($id) || !is_numeric($id)) {
-            echo '<p>ID de producto no válido.</p>';
-            return;
-        }
+        // ------------------------------------------------------
+        // 2. Preparamos la consulta para productos y categorías
+        // ------------------------------------------------------
+        $consulta = "SELECT p.id, p.nom, p.descripció, p.preu, c.nom as categoria
+                     FROM productes p
+                     INNER JOIN categories c ON p.categoria_id = c.id";
 
-        // Obtiene la conexión a la base de datos
-        $conexionObj = new Connexio();
-        $conexion = $conexionObj->obtenirConnexio();
-
-        // Consulta para obtener la información del producto
-        $consulta = "SELECT id, nom, descripció, preu, categoria_id
-                     FROM productes
-                     WHERE id = " . $id;
+        // Ejecutamos la consulta y guardamos el resultado en $resultado
         $resultado = $conexion->query($consulta);
 
-        // Verifica si se encontró el producto
-        if ($resultado && $resultado->num_rows > 0) {
-            $producto = $resultado->fetch_assoc();
+        // ------------------------------------------------------
+        // 3. Comenzamos a generar la estructura HTML (cabecera)
+        // ------------------------------------------------------
+        echo '<!DOCTYPE html>
+              <html lang="es">
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                <title>Llista de productes</title>
+                <!-- Enlace a Bootstrap -->
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+              </head>
+              <body>
+                <div class="container mt-5" style="margin-bottom: 100px">';
 
-            // Imprime la estructura HTML del formulario de modificación
-            echo '<!DOCTYPE html>
-                  <html lang="es">
-                  <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-                    <title>Modificar producte</title>
-                    <!-- Enlace a Bootstrap desde su repositorio remoto -->
-                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-                  </head>
-                  <body>
-                    <div class="container mt-5" style="margin-bottom: 200px">
-                        <h2>Modificar producte</h2>
-                        <hr>
-                        <form action="Actualitzar.php" method="POST">
-                            <!-- Campos del formulario con la información actual del producto -->
-                            <input type="hidden" name="id" value="' . $producto['id'] . '">
+        // ------------------------------------------------------
+        // 4. Verificamos si hay filas devueltas por la consulta
+        // ------------------------------------------------------
+        if ($resultado->num_rows > 0) {
+            // Muestra un botón para crear un nuevo producto (Nou.php)
+            echo '<hr><a href="Nou.php" class="btn btn-primary">Nou producte</a><hr>';
 
-                            <div class="mb-3">
-                                <label for="nom" class="form-label">Nombre:</label>
-                                <input type="text" name="nom" class="form-control" value="' . $producto['nom'] . '" required>
-                            </div>
+            // ------------------------------------------------------
+            // 5. Si hay productos, mostramos una tabla con Bootstrap
+            // ------------------------------------------------------
+            echo '<table class="table table-striped">';
+            echo '<thead>
+                    <tr>
+                        <th></th>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Descripció</th>
+                        <th>Preu</th>
+                        <th>Categoria</th>
+                        <th colspan="2">Accions</th>
+                    </tr>
+                  </thead>';
+            echo '<tbody>';
 
-                            <div class="mb-3">
-                                <label for="descripcio" class="form-label">Descripción:</label>
-                                <input type="text" name="descripcio" class="form-control" value="' . $producto['descripció'] . '" required>
-                            </div>
+            // Variable para numerar cada producto en la primera columna
+            $i = 1;
 
-                            <div class="mb-3">
-                                <label for="preu" class="form-label">Precio:</label>
-                                <input type="number" name="preu" class="form-control" value="' . $producto['preu'] . '" required>
-                            </div>
+            // Recorremos el conjunto de resultados y mostramos cada producto
+            while ($fila = $resultado->fetch_assoc()) {
+                // Cada fila de la tabla contiene la información del producto
+                // y los botones para modificar o eliminar
+                echo '<tr>
+                        <td>' . $i . '</td>
+                        <td>' . 'prod-' . $fila['id'] . '</td>
+                        <td>' . $fila['nom'] . '</td>
+                        <td>' . $fila['descripció'] . '</td>
+                        <td>' . $fila['preu'] . '</td>
+                        <td>' . $fila['categoria'] . '</td>
+                        <td><a href="Modificar.php?id=' . $fila['id'] . '" class="btn btn-warning">Modificar</a></td>
+                        <td><a href="Eliminar.php?id=' . $fila['id'] . '" class="btn btn-danger">Eliminar</a></td>
+                      </tr>';
+                $i++;
+            }
 
-                            <div class="mb-3">
-                                <label for="categoria" class="form-label">Categoría:</label>
-                                <select name="categoria" class="form-select" required>
-                                    <!-- Opciones del selector de categorías con la opción seleccionada según la información actual -->
-                                    <option value="1" ' . ($producto['categoria_id'] == 1 ? 'selected' : '') . '>Electrónicos</option>
-                                    <option value="2" ' . ($producto['categoria_id'] == 2 ? 'selected' : '') . '>Roba</option>
-                                    <!-- Agrega más opciones según sea necesario -->
-                                </select>
-                            </div>
+            echo '</tbody>';
+            echo '</table>';
+            echo '</div>';
 
-                            <!-- Agrega más campos según sea necesario -->
-
-                            <hr>
-                            <!-- Botones de guardar y cancelar -->
-                            <input type="submit" value="Guardar" class="btn btn-primary">
-                            <a href="Principal.php" class="btn btn-secondary">Cancelar</a>
-                        </form>
-                    </div>';
-            
-            // Incluye el pie de página
+            // ------------------------------------------------------
+            // 6. Incluye el footer de la página
+            // ------------------------------------------------------
             require_once('Footer.php');
         } else {
-            echo '<p>No se encontró el producto.</p>';
+            // Si no se encontraron productos, muestra un mensaje alternativo
+            echo '<p>No hi ha productes.</p>';
         }
 
-        // Cierra la conexión a la base de datos
+        // ------------------------------------------------------
+        // 7. Cerrar la conexión con la base de datos
+        // ------------------------------------------------------
         $conexion->close();
     }
 }
 
-// Obtiene el ID del producto de la variable GET
-$idProducto = isset($_GET['id']) ? $_GET['id'] : null;
-
-// Crea una instancia de la clase Modificar y llama al método mostrarFormulari
-$modificarProducto = new Modificar();
-$modificarProducto->mostrarFormulari($idProducto);
+// ------------------------------------------------------
+// 8. Instanciamos la clase Principal y llamamos al método
+//    para que se genere todo el contenido HTML
+// ------------------------------------------------------
+$listaProductos = new Principal();
+$listaProductos->mostrarProductes();
 
 ?>
